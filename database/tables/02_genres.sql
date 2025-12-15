@@ -1,0 +1,6 @@
+USE online_cinema;
+
+CREATE TABLE genres (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) UNIQUE NOT NULL
+);

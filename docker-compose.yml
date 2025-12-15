@@ -14,6 +14,7 @@ services:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+      - ./database/tables:/docker-entrypoint-initdb.d
 
   backend:
     build: ./backend
@@ -34,6 +35,8 @@ services:
     container_name: nginx
     ports:
       - "80:80"
+    volumes:
+      - ./movies:/movies
     depends_on:
       - frontend
       - backend
