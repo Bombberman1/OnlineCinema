@@ -1,6 +1,6 @@
 USE online_cinema;
 
-CREATE TABLE movie_genres (
+CREATE TABLE IF NOT EXISTS movie_genres (
     movie_id BIGINT,
     genre_id BIGINT,
     PRIMARY KEY (movie_id, genre_id),

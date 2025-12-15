@@ -1,6 +1,6 @@
 USE online_cinema;
 
-CREATE TABLE video_files (
+CREATE TABLE IF NOT EXISTS video_files (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     movie_id BIGINT NOT NULL,
     quality INT NOT NULL,
