@@ -1,5 +1,7 @@
 package com.iot.course.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -7,6 +9,8 @@ import lombok.*;
 @Table(name = "users")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class User {
     @Id
@@ -23,5 +27,6 @@ public class User {
     private boolean isAdmin;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private Profile profile;
 }

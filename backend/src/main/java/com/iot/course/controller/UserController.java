@@ -3,9 +3,15 @@ package com.iot.course.controller;
 import com.iot.course.model.User;
 import com.iot.course.service.UserService;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
@@ -14,11 +20,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/register")
-    public User register(@RequestParam String email, @RequestParam String password) {
-        return userService.register(email, password);
-    }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public User getUser(@PathVariable Long id) {
         User user = userService.getById(id);
@@ -28,5 +30,10 @@ public class UserController {
         }
 
         return user;
+    }
+
+    @GetMapping
+    public List<User> getAllUsers() {
+        return userService.getAll();
     }
 }

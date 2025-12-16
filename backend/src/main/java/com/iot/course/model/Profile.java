@@ -2,12 +2,17 @@ package com.iot.course.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import lombok.*;
 
 @Entity
 @Table(name = "profiles")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class Profile {
     @Id
@@ -16,6 +21,7 @@ public class Profile {
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonBackReference
     private User user;
 
     @Column(name = "username")
