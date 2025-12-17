@@ -23,6 +23,8 @@ services:
       - mysql
     ports:
       - "8080:8080"
+    volumes:
+      - ./movies:/movies
 
   frontend:
     build: ./frontend
@@ -35,8 +37,8 @@ services:
     container_name: nginx
     ports:
       - "80:80"
-    volumes:
-      - ./movies:/movies
+    # volumes:
+    #   - ./movies:/movies
     depends_on:
       - frontend
       - backend

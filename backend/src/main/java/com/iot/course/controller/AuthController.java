@@ -5,15 +5,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.iot.course.dto.auth.AuthResponseDTO;
+import com.iot.course.dto.auth.LogInResponseDTO;
+import com.iot.course.dto.auth.ChangePasswordDTO;
 import com.iot.course.dto.auth.LogInRequestDTO;
 import com.iot.course.dto.auth.SignUpRequestDTO;
 import com.iot.course.dto.error.ErrorResponseDTO;
-import com.iot.course.exception.InvalidData;
+import com.iot.course.exception.AuthFailed;
 import com.iot.course.service.AuthService;
 
 @RestController
@@ -23,32 +25,25 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signup(@RequestBody SignUpRequestDTO request) {
-        authService.signup(request.getEmail(), request.getPassword(), request.isAdmin());
+    public ResponseEntity<Void> signup(@RequestBody SignUpRequestDTO dto) {
+        authService.signup(dto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponseDTO> login(@RequestBody LogInRequestDTO request) {
-        return ResponseEntity.ok(authService.login(request.getEmail(), request.getPassword()));
+    public ResponseEntity<LogInResponseDTO> login(@RequestBody LogInRequestDTO dto) {
+        return ResponseEntity.ok(authService.login(dto));
     }
 
-    @ExceptionHandler(InvalidData.class)
-    public ResponseEntity<ErrorResponseDTO> handleBadRequest(InvalidData ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+    @PutMapping("/change_password")
+    public ResponseEntity<Void> changePassword(@RequestBody ChangePasswordDTO dto) {
+        authService.changePassword(dto);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @ExceptionHandler(AuthFailed.class)
+    public ResponseEntity<ErrorResponseDTO> handleAuthFailed(AuthFailed ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                             .body(new ErrorResponseDTO(ex.getMessage()));
-    }
-
-    // @ExceptionHandler(UnauthorizedException.class)
-    // public ResponseEntity<ErrorResponse> handleUnauthorized(UnauthorizedException ex) {
-    //     return ResponseEntity
-    //             .status(HttpStatus.UNAUTHORIZED)
-    //             .body(new ErrorResponse(ex.getMessage()));
-    // }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponseDTO> handleOther(Exception ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                            .body(new ErrorResponseDTO("Internal server error"));
     }
 }

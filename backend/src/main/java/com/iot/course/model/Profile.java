@@ -20,7 +20,7 @@ public class Profile {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
     @JsonBackReference
     private User user;
 
