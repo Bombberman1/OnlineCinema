@@ -1,39 +1,28 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getRecommends } from "../api/movies";
+import { getFavorites } from "../api/favorites";
 import "../styles/movies.css";
 
-const HomePage = () => {
-    const [recommended, setRecommended] = useState([]);
+const FavoritesPage = () => {
+    const [favorites, setFavorites] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
-        const loadRecommends = async () => {
-            const data = await getRecommends();
-            setRecommended(data);
-        };
-
-        loadRecommends();
+        getFavorites().then(setFavorites);
     }, []);
-
-    if (recommended.length === 0) {
-        return (
-            <div className="movies-page">
-                <h2>No recommendations yet</h2>
-            </div>
-        );
-    }
 
     return (
         <div className="movies-page">
-            <h2>Recommended for you</h2>
+            <h2>My Favorites</h2>
 
             <div className="movies-grid">
-                {recommended.map((movie) => (
+                {favorites.map((movie) => (
                     <div
-                        key={movie.id}
+                        key={movie.movieId}
                         className="movie-card"
-                        onClick={() => navigate(`/watch/${movie.id}`)}
+                        onClick={() =>
+                            navigate(`/watch/${movie.movieId}`)
+                        }
                     >
                         <img
                             src={movie.posterUrl}
@@ -42,7 +31,6 @@ const HomePage = () => {
 
                         <div className="movie-info">
                             <h3>{movie.title}</h3>
-                            <span>{movie.releaseYear}</span>
                         </div>
                     </div>
                 ))}
@@ -51,4 +39,4 @@ const HomePage = () => {
     );
 };
 
-export default HomePage;
+export default FavoritesPage;

@@ -2,17 +2,22 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import HomePage from "./pages/HomePage";
+import MoviesPage from "./pages/MoviesPage";
+import WatchPage from "./pages/WatchPage";
+import ProfilePage from "./pages/ProfilePage";
+import FavoritesPage from "./pages/FavoritesPage";
+import ChangePasswordPage from "./pages/ChangePasswordPage";
+
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminMoviesPage from "./pages/admin/AdminMoviesPage";
+import AdminVideoFilesPage from "./pages/admin/AdminVideoFilesPage";
+
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminRoute from "./components/AdminRoute";
 import AuthInitializer from "./components/AuthInitializer";
 import Navbar from "./components/Navbar";
-import ProfilePage from "./pages/ProfilePage";
 import ToastProvider from "./components/ToastProvider";
-import ChangePasswordPage from "./pages/ChangePasswordPage";
-import AdminDashboard from "./pages/admin/AdminDashboard";
-import AdminMoviesPage from "./pages/admin/AdminMoviesPage";
-import AdminVideoFilesPage from "./pages/admin/AdminVideoFilesPage";
-import WatchPage from "./pages/WatchPage";
+import SubscriptionPage from "./pages/SubscriptionPage";
 
 const Layout = ({ children }) => {
     const location = useLocation();
@@ -48,6 +53,15 @@ function App() {
                             />
 
                             <Route
+                                path="/movies"
+                                element={
+                                    <ProtectedRoute>
+                                        <MoviesPage />
+                                    </ProtectedRoute>
+                                }
+                            />
+
+                            <Route
                                 path="/watch/:movieId"
                                 element={
                                     <ProtectedRoute>
@@ -66,7 +80,25 @@ function App() {
                             />
 
                             <Route
-                                path="/change-password"
+                                path="/favorites"
+                                element={
+                                    <ProtectedRoute>
+                                        <FavoritesPage />
+                                    </ProtectedRoute>
+                                }
+                            />
+
+							<Route
+								path="/subscription"
+								element={
+									<ProtectedRoute>
+										<SubscriptionPage />
+									</ProtectedRoute>
+								}
+							/>
+
+                            <Route
+                                path="/change_password"
                                 element={
                                     <ProtectedRoute>
                                         <ChangePasswordPage />

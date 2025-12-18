@@ -1,37 +1,87 @@
 .movies-page {
-    padding: 40px;
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+    color: #ffffff;
 }
 
 .movies-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 24px;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
 }
 
 .movie-card {
-    cursor: pointer;
     background-color: #1c1c1c;
-    border-radius: 8px;
+    border-radius: 10px;
     overflow: hidden;
-    color: white;
-    transition: transform 0.2s;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .movie-card:hover {
-    transform: scale(1.05);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
 .movie-card img {
     width: 100%;
-    height: 280px;
+    height: 320px;
     object-fit: cover;
 }
 
-.movie-card h3 {
-    margin: 12px;
+.movie-info {
+    padding: 12px;
 }
 
-.movie-card p {
+.movie-info h3 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.movie-info span {
+    font-size: 13px;
+    opacity: 0.7;
+}
+
+.favorite-button {
     margin: 0 12px 12px;
-    color: #aaa;
+    padding: 6px 10px;
+    background-color: transparent;
+    border: 1px solid #e50914;
+    color: #e50914;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 13px;
+    width: calc(100% - 24px);
+}
+
+.favorite-button:hover {
+    background-color: #e50914;
+    color: #ffffff;
+}
+
+.favorite-label {
+    margin: 0 12px 12px;
+    padding: 6px 10px;
+    background-color: #2a2a2a;
+    border-radius: 6px;
+    font-size: 13px;
+    text-align: center;
+    opacity: 0.8;
+}
+
+.filters {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.filters input,
+.filters select {
+    padding: 6px 10px;
+    background-color: #1c1c1c;
+    border: 1px solid #333;
+    color: #fff;
+    border-radius: 6px;
 }

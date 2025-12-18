@@ -1,28 +1,39 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import AvatarMenu from "./AvatarMenu";
 import "../styles/navbar.css";
 
 const Navbar = () => {
+    const location = useLocation();
     const { isAuthenticated, isAdmin } = useSelector(
         (state) => state.auth
     );
+
+    const isActive = (path) => {
+        return location.pathname === path
+            ? "navbar-link active"
+            : "navbar-link";
+    };
 
     return (
         <nav className="navbar">
             <div className="navbar-left">
                 <Link to="/" className="navbar-logo">
-                    OnlineCinema
+                    <span className="brand-red">Online</span>Cinema
                 </Link>
 
                 {isAuthenticated && (
                     <>
-                        <Link to="/" className="navbar-link">
+                        <Link to="/movies" className={isActive("/movies")}>
                             Movies
                         </Link>
 
+                        <Link to="/favorites" className={isActive("/favorites")}>
+                            Favorites
+                        </Link>
+
                         {isAdmin && (
-                            <Link to="/admin" className="navbar-link">
+                            <Link to="/admin" className={isActive("/admin")}>
                                 Admin
                             </Link>
                         )}

@@ -46,6 +46,10 @@ const AvatarMenu = () => {
                         Profile
                     </button>
 
+                    <button onClick={() => navigate("/subscription")}>
+                        Subscription
+                    </button>
+
                     <button onClick={() => navigate("/change_password")}>
                         Change password
                     </button>
