@@ -17,7 +17,6 @@ import com.iot.course.dto.video_file.VideoFileRequestDTO;
 import com.iot.course.dto.video_file.VideoFileUploadRequestDTO;
 import com.iot.course.model.VideoFile;
 import com.iot.course.service.VideoFileService;
-import com.iot.course.service.WatchHistoryService;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,8 +30,6 @@ import org.springframework.web.bind.annotation.RequestPart;
 public class VideoFileController {
     @Autowired
     private VideoFileService videoFileService;
-    @Autowired
-    private WatchHistoryService watchHistoryService;
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
@@ -59,8 +56,6 @@ public class VideoFileController {
     @GetMapping("/{movieId}/watch")
     public ResponseEntity<Resource> watch(@PathVariable Long movieId, @RequestParam Integer quality) {
         Resource videoResource = videoFileService.loadVideoResource(movieId, quality);
-
-        watchHistoryService.create(movieId);
 
         return ResponseEntity.ok()
                             .contentType(MediaType.APPLICATION_OCTET_STREAM)

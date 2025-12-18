@@ -3,6 +3,7 @@ package com.iot.course.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.iot.course.dto.movie.MovieRequestDTO;
@@ -11,6 +12,7 @@ import com.iot.course.exception.NotFound;
 import com.iot.course.model.Genre;
 import com.iot.course.model.Movie;
 import com.iot.course.repository.MovieRepository;
+import com.iot.course.util.CustomUserDetails;
 
 @Service
 public class MovieService {
@@ -18,6 +20,8 @@ public class MovieService {
     private MovieRepository movieRepository;
     @Autowired
     private GenreService genreService;
+    @Autowired
+    private RecommendationService recommendationService;
 
     public void create(MovieRequestDTO dto) {
         Movie movie = Movie.builder()
@@ -72,5 +76,29 @@ public class MovieService {
                                     .toList()
                             ))
                             .toList();
+    }
+
+    public List<MovieResponseDTO> getAllRecommends() {
+        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                                                                                .getAuthentication()
+                                                                                .getPrincipal();
+
+        List<Movie> movies = recommendationService.recommend(userDetails.getId());
+
+        return movies.stream()
+                    .map(m -> new MovieResponseDTO(
+                        m.getId(),
+                        m.getTitle(),
+                        m.getDescription(),
+                        m.getReleaseYear(),
+                        m.getCountry(),
+                        m.getRating(),
+                        m.getPosterUrl(),
+                        m.getGenres()
+                            .stream()
+                            .map(Genre::getName)
+                            .toList()
+                    ))
+                    .toList();
     }
 }

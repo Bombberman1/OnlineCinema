@@ -4,6 +4,5 @@ import java.time.LocalDateTime;
 
 public record WatchHistoryResponseDTO(
     Long movieId,
-    String title,
     LocalDateTime watchedAt
 ) {}

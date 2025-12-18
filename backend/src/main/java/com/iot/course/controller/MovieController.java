@@ -38,4 +38,9 @@ public class MovieController {
     public List<MovieResponseDTO> getAll() {
         return movieService.getAll();
     }
+
+    @GetMapping("/recommends")
+    public List<MovieResponseDTO> getAllRecommends() {
+        return movieService.getAllRecommends();
+    }
 }

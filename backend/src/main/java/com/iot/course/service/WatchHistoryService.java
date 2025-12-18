@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.iot.course.dto.watch_history.WatchHistoryResponseDTO;
 import com.iot.course.exception.NotFound;
 import com.iot.course.model.Movie;
 import com.iot.course.model.User;
@@ -45,7 +46,17 @@ public class WatchHistoryService {
         );
     }
 
-    public List<WatchHistory> getUserHistory(Long userId) {
-        return watchHistoryRepository.findByUserIdOrderByWatchedAtDesc(userId);
+    public List<WatchHistoryResponseDTO> getUserHistory() {
+        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                                                                                .getAuthentication()
+                                                                                .getPrincipal();
+
+        return watchHistoryRepository.findByUserIdOrderByWatchedAtDesc(userDetails.getId())
+                                    .stream()
+                                    .map(w -> new WatchHistoryResponseDTO(
+                                        w.getMovie().getId(),
+                                        w.getWatchedAt()
+                                    ))
+                                    .toList();
     }
 }

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,9 +22,13 @@ import com.iot.course.dto.video_file.VideoFileUploadRequestDTO;
 import com.iot.course.exception.Exists;
 import com.iot.course.exception.NotFound;
 import com.iot.course.model.Movie;
+import com.iot.course.model.User;
 import com.iot.course.model.VideoFile;
 import com.iot.course.repository.MovieRepository;
+import com.iot.course.repository.UserRepository;
 import com.iot.course.repository.VideoFileRepository;
+import com.iot.course.util.CompositeVideoResource;
+import com.iot.course.util.CustomUserDetails;
 
 @Service
 public class VideoFileService {
@@ -31,6 +36,12 @@ public class VideoFileService {
     private VideoFileRepository videoFileRepository;
     @Autowired
     private MovieRepository movieRepository;
+    @Autowired
+    private SubscriptionService subscriptionService;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private WatchHistoryService watchHistoryService;
 
     @Value("${videos-path}")
     private String basePath;
@@ -101,8 +112,19 @@ public class VideoFileService {
     }
 
     public Resource loadVideoResource(Long movieId, Integer quality) {
+        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                                                                                .getAuthentication()
+                                                                                .getPrincipal();
+
+        User user = userRepository.findById(userDetails.getId())
+                                .orElseThrow(() -> new NotFound("User not found"));
+
+        boolean hasSub = subscriptionService.hasActiveSubscription(user.getId());
+
         VideoFile video = videoFileRepository.findByMovieIdAndQuality(movieId, quality)
                                             .orElseThrow(() -> new NotFound("Video not found or wrong quality"));
+
+        watchHistoryService.create(movieId);
 
         Path path = Paths.get(video.getFilePath());
 
@@ -111,8 +133,23 @@ public class VideoFileService {
             if (!resource.exists()) {
                 throw new NotFound("Video file not found");
             }
-            return resource;
+
+            if (hasSub) {
+                return resource;
+            }
+
+            Path adPath = Paths.get("/movies/coca_cola.mp4");
+            if (!Files.exists(adPath)) {
+                throw new NotFound("Ad file not found");
+            }
+
+            return new UrlResource(adPath.toUri());
+
+            // return new CompositeVideoResource(adPath, path); // Вже замахав той браузер
+
         } catch (MalformedURLException ex) {
+            throw new NotFound("Video file not found");
+        } catch (IOException ex) {
             throw new NotFound("Video file not found");
         }
     }
