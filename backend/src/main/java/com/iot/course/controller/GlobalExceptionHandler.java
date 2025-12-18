@@ -52,6 +52,12 @@ public class GlobalExceptionHandler {
                             .body(new ErrorResponseDTO("Not enough permissions"));
     }
 
+    @ExceptionHandler(InternalError.class)
+    public ResponseEntity<ErrorResponseDTO> handleAccessDenied(InternalError ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .body(new ErrorResponseDTO(ex.getMessage()));
+    }
+
     // @ExceptionHandler(Exception.class)
     // public ResponseEntity<ErrorResponseDTO> handleAny(Exception ex) {
     //     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

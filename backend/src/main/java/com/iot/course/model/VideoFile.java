@@ -1,5 +1,7 @@
 package com.iot.course.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 
 import lombok.*;
@@ -23,6 +25,7 @@ public class VideoFile {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "movie_id", nullable = false)
+    @JsonIgnore
     private Movie movie;
 
     @Column(name = "quality", nullable = false)

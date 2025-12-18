@@ -11,4 +11,6 @@ public interface VideoFileRepository extends JpaRepository<VideoFile, Long> {
     Optional<VideoFile> findByMovieIdAndQuality(Long movieId, Integer quality);
 
     List<VideoFile> findByMovieId(Long movieId);
+
+    // boolean existsByMovieIdAndQuality(Long movieId, Integer quality);
 }

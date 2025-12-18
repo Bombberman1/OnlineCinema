@@ -1,6 +1,7 @@
 package com.iot.course.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -42,5 +43,9 @@ public class WatchHistoryService {
                         .watchedAt(LocalDateTime.now())
                         .build()
         );
+    }
+
+    public List<WatchHistory> getUserHistory(Long userId) {
+        return watchHistoryRepository.findByUserIdOrderByWatchedAtDesc(userId);
     }
 }

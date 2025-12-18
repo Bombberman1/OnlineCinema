@@ -10,15 +10,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.iot.course.dto.video_file.VideoFileQualityResponseDTO;
+import com.iot.course.dto.video_file.VideoFileRequestDTO;
+import com.iot.course.dto.video_file.VideoFileUploadRequestDTO;
 import com.iot.course.model.VideoFile;
 import com.iot.course.service.VideoFileService;
 import com.iot.course.service.WatchHistoryService;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 
 @RestController
 @RequestMapping("/api/video_files")
@@ -27,6 +33,23 @@ public class VideoFileController {
     private VideoFileService videoFileService;
     @Autowired
     private WatchHistoryService watchHistoryService;
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping
+    public ResponseEntity<Void> create(@RequestBody VideoFileRequestDTO dto) {
+        videoFileService.create(dto);
+        return ResponseEntity.status(201).build();
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Void> uploadVideo(
+        @RequestPart("file") MultipartFile file,
+        @RequestPart("metadata") VideoFileUploadRequestDTO dto
+    ) {
+        videoFileService.uploadVideo(file, dto);
+        return ResponseEntity.status(201).build();
+    }
 
     @GetMapping("/{movieId}/qualities")
     public List<VideoFileQualityResponseDTO> getQualities(@PathVariable Long movieId) {

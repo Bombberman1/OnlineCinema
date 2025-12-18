@@ -15,6 +15,7 @@ import com.iot.course.util.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -59,9 +60,11 @@ public class AuthService {
 
             return new LogInResponseDTO(token);
 
-        } catch (BadCredentialsException e) {
+        } catch (BadCredentialsException ex) {
             throw new AuthFailed("Invalid email or password");
-        } catch (AuthenticationException e) {
+        } catch (InternalAuthenticationServiceException ex) {
+            throw new AuthFailed("Invalid email or password");
+        } catch (AuthenticationException ex) {
             throw new AuthFailed("Authentication failed");
         }
     }
