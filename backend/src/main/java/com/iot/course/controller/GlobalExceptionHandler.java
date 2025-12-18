@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.iot.course.dto.error.ErrorResponseDTO;
 import com.iot.course.exception.Exists;
+import com.iot.course.exception.InvalidData;
 import com.iot.course.exception.InvalidJwtPayload;
 import com.iot.course.exception.NotFound;
 
@@ -25,6 +26,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exists.class)
     public ResponseEntity<ErrorResponseDTO> handleExists(Exists ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
+                            .body(new ErrorResponseDTO(ex.getMessage()));
+    }
+
+    @ExceptionHandler(InvalidData.class)
+    public ResponseEntity<ErrorResponseDTO> handleInvalidData(InvalidData ex) {
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_CONTENT)
                             .body(new ErrorResponseDTO(ex.getMessage()));
     }
 

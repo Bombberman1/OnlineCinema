@@ -77,6 +77,9 @@ public class VideoFileService {
                 StandardCopyOption.REPLACE_EXISTING
             );
 
+            videoFileRepository.findByMovieIdAndQuality(movie.getId(), dto.quality())
+                            .ifPresent(videoFileRepository::delete);
+
             VideoFile video = VideoFile.builder()
                                     .movie(movie)
                                     .quality(dto.quality())
@@ -86,7 +89,7 @@ public class VideoFileService {
             videoFileRepository.save(video);
 
         } catch (IOException e) {
-            throw new InternalError("Failed to store video file: " + e);
+            throw new InternalError("Failed to store video file", e);
         }
     }
 

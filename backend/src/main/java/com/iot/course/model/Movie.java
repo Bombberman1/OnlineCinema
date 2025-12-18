@@ -45,6 +45,6 @@ public class Movie {
     )
     private List<Genre> genres;
 
-    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
     private List<VideoFile> videos;
 }

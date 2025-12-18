@@ -70,15 +70,21 @@ public class AuthService {
     }
 
     public void changePassword(ChangePasswordDTO dto) {
-        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
-                                                                                .getAuthentication()
-                                                                                .getPrincipal();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        if (auth == null || !(auth.getPrincipal() instanceof CustomUserDetails userDetails)) {
+            throw new AuthFailed("Not authenticated");
+        }
 
         User user = userRepository.findById(userDetails.getId())
                                 .orElseThrow(() -> new NotFound("User not found"));
 
         if (!encoder.matches(dto.oldPassword(), user.getPasswordHash())) {
             throw new InvalidData("Old password is incorrect");
+        }
+
+        if (dto.newPassword().isEmpty()) {
+            throw new InvalidData("New password is empty");
         }
 
         user.setPasswordHash(encoder.encode(dto.newPassword()));
