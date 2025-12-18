@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { getMovies } from "../api/movies";
 import "../styles/movies.css";
 
-const HomePage = () => {
+const MoviesPage = () => {
     const [movies, setMovies] = useState([]);
     const navigate = useNavigate();
 
@@ -32,4 +32,4 @@ const HomePage = () => {
     );
 };
 
-export default HomePage;
+export default MoviesPage;

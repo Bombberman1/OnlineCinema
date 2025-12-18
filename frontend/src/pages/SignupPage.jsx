@@ -1,21 +1,20 @@
 import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { signup } from "../api/auth";
-import { Link, useNavigate } from "react-router-dom";
-import "../styles/auth.css";
-import { getErrorMessage } from "../api/error.js";
+import { useToast } from "../components/ToastProvider";
+import "../styles/forms.css";
+import "../styles/toggle.css";
 
 const SignupPage = () => {
+    const navigate = useNavigate();
+    const { showToast } = useToast();
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [isAdmin, setIsAdmin] = useState(false);
-    const [error, setError] = useState("");
-    const [success, setSuccess] = useState(false);
-
-    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError("");
 
         try {
             await signup({
@@ -24,26 +23,19 @@ const SignupPage = () => {
                 admin: isAdmin,
             });
 
-            setSuccess(true);
-
-            setTimeout(() => {
-                navigate("/login");
-            }, 1500);
+            showToast("Account created", "success");
+            navigate("/login");
         } catch (err) {
-            setError(getErrorMessage(err));
+            showToast(err.response?.data?.message || "Signup failed", "error");
         }
     };
 
     return (
-        <div className="auth-container">
-            <form className="auth-form" onSubmit={handleSubmit}>
-                <h2>Sign Up</h2>
+        <div className="form-container">
+            <h2 className="form-title">Sign Up</h2>
 
-                {error && <p className="error">{error}</p>}
-                {success && <p className="success">Account created. Redirecting…</p>}
-
+            <form className="form" onSubmit={handleSubmit}>
                 <input
-                    type="email"
                     placeholder="Email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -58,8 +50,10 @@ const SignupPage = () => {
                     required
                 />
 
-                <div className="toggle-container">
-                    <label className="toggle-switch">
+                <div className="toggle-row">
+                    <span className="toggle-label">Admin account</span>
+
+                    <label className="toggle">
                         <input
                             type="checkbox"
                             checked={isAdmin}
@@ -67,15 +61,14 @@ const SignupPage = () => {
                         />
                         <span className="toggle-slider"></span>
                     </label>
-                    <span>Register as admin</span>
                 </div>
 
                 <button type="submit">Create Account</button>
-
-                <div className="auth-footer">
-                    Already have an account? <Link to="/login">Login</Link>
-                </div>
             </form>
+
+            <p style={{ textAlign: "center", marginTop: "16px", color: "#aaa" }}>
+                Already have an account? <Link to="/login">Login</Link>
+            </p>
         </div>
     );
 };

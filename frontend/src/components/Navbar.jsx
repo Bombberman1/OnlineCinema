@@ -4,14 +4,30 @@ import AvatarMenu from "./AvatarMenu";
 import "../styles/navbar.css";
 
 const Navbar = () => {
-    const isAuthenticated = useSelector(
-        (state) => state.auth.isAuthenticated
+    const { isAuthenticated, isAdmin } = useSelector(
+        (state) => state.auth
     );
 
     return (
         <nav className="navbar">
             <div className="navbar-left">
-                <Link to="/">OnlineCinema</Link>
+                <Link to="/" className="navbar-logo">
+                    OnlineCinema
+                </Link>
+
+                {isAuthenticated && (
+                    <>
+                        <Link to="/" className="navbar-link">
+                            Movies
+                        </Link>
+
+                        {isAdmin && (
+                            <Link to="/admin" className="navbar-link">
+                                Admin
+                            </Link>
+                        )}
+                    </>
+                )}
             </div>
 
             <div className="navbar-right">

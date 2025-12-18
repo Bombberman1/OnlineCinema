@@ -1,46 +1,37 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { loginSuccess, setCurrentUser } from "../store/authSlice";
+import { useNavigate, Link } from "react-router-dom";
 import { login } from "../api/auth";
-import { getCurrentUser } from "../api/users";
-import { Link, useNavigate } from "react-router-dom";
-import "../styles/auth.css";
-import { getErrorMessage } from "../api/error.js";
+import { loginSuccess } from "../store/authSlice";
+import { useToast } from "../components/ToastProvider";
+import "../styles/forms.css";
 
 const LoginPage = () => {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
-
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const { showToast } = useToast();
+
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError("");
 
         try {
             const data = await login({ email, password });
             dispatch(loginSuccess(data.token));
-
-            const user = await getCurrentUser();
-            dispatch(setCurrentUser(user));
-
             navigate("/");
         } catch (err) {
-            setError(getErrorMessage(err));
+            showToast(err.response?.data?.message || "Login failed", "error");
         }
     };
 
     return (
-        <div className="auth-container">
-            <form className="auth-form" onSubmit={handleSubmit}>
-                <h2>Login</h2>
+        <div className="form-container">
+            <h2 className="form-title">Login</h2>
 
-                {error && <p className="error">{error}</p>}
-
+            <form className="form" onSubmit={handleSubmit}>
                 <input
-                    type="email"
                     placeholder="Email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -56,11 +47,11 @@ const LoginPage = () => {
                 />
 
                 <button type="submit">Login</button>
-
-                <div className="auth-footer">
-                    Don’t have an account? <Link to="/signup">Sign up</Link>
-                </div>
             </form>
+
+            <p style={{ textAlign: "center", marginTop: "16px", color: "#aaa" }}>
+                No account? <Link to="/signup">Sign up</Link>
+            </p>
         </div>
     );
 };

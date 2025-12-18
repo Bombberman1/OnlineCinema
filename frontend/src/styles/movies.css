@@ -1,20 +1,24 @@
+.movies-page {
+    padding: 40px;
+}
+
 .movies-grid {
-    padding: 30px;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 20px;
+    gap: 24px;
 }
 
 .movie-card {
-    background-color: var(--bg-surface);
-    border-radius: var(--radius);
+    cursor: pointer;
+    background-color: #1c1c1c;
+    border-radius: 8px;
     overflow: hidden;
-    transition: var(--transition);
+    color: white;
+    transition: transform 0.2s;
 }
 
 .movie-card:hover {
-    transform: scale(1.03);
-    background-color: var(--bg-hover);
+    transform: scale(1.05);
 }
 
 .movie-card img {
@@ -23,11 +27,11 @@
     object-fit: cover;
 }
 
-.movie-card-content {
-    padding: 12px;
+.movie-card h3 {
+    margin: 12px;
 }
 
-.movie-title {
-    font-size: 16px;
-    font-weight: bold;
+.movie-card p {
+    margin: 0 12px 12px;
+    color: #aaa;
 }
