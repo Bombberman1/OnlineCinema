@@ -1,0 +1,42 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: online_cinema
+      MYSQL_USER: cinema
+      MYSQL_PASSWORD: cinema
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  backend:
+    build: ./backend
+    container_name: backend
+    depends_on:
+      - mysql
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./movies:/movies
+
+  frontend:
+    container_name: frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    depends_on:
+      - backend
+
+volumes:
+  mysql_data:

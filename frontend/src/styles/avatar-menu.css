@@ -1,0 +1,56 @@
+.avatar-menu {
+    position: relative;
+}
+
+.avatar-button {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid var(--bg-hover);
+}
+
+.avatar-button img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatar-dropdown {
+    position: absolute;
+    right: 0;
+    top: 46px;
+    background-color: var(--bg-surface);
+    border-radius: var(--radius);
+    min-width: 180px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    display: flex;
+    flex-direction: column;
+    padding: 6px 0;
+    z-index: 1000;
+}
+
+.avatar-dropdown button {
+    background: none;
+    border: none;
+    color: white;
+    padding: 10px 16px;
+    text-align: left;
+    cursor: pointer;
+    width: 100%;
+}
+
+.avatar-dropdown button:hover {
+    background-color: var(--bg-hover);
+}
+
+.avatar-dropdown .logout {
+    color: #ff6b6b;
+}
+
+.avatar-dropdown .divider {
+    height: 1px;
+    background-color: var(--bg-hover);
+    margin: 6px 0;
+}

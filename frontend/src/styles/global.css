@@ -1,0 +1,26 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", system-ui, sans-serif;
+    background-color: var(--bg-main);
+    color: var(--color-text);
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button {
+    font-family: inherit;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+}
+
+input {
+    font-family: inherit;
+}
