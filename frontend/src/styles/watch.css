@@ -1,0 +1,88 @@
+.watch-page {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.watch-header h1 {
+    margin: 0;
+    font-size: 32px;
+}
+
+.watch-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    color: #bbb;
+    font-size: 14px;
+}
+
+.quality-selector {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.quality-selector.top {
+    justify-content: flex-start;
+}
+
+.quality-button {
+    padding: 6px 12px;
+    background-color: #1c1c1c;
+    border: 1px solid #333;
+    color: #ffffff;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.15s ease;
+}
+
+.quality-button:hover {
+    background-color: #2a2a2a;
+}
+
+.quality-button.active {
+    background-color: #e50914;
+    border-color: #e50914;
+    color: #ffffff;
+}
+
+.video-wrapper {
+    width: 100%;
+}
+
+.video-player {
+    width: 100%;
+    border-radius: 12px;
+    background: black;
+}
+
+.video-poster {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.25s ease;
+}
+
+.video-poster:hover {
+    transform: scale(1.01);
+}
+
+.watch-actions {
+    margin-top: 6px;
+}
+
+.watch-description {
+    margin-top: 8px;
+}
+
+.watch-description p {
+    color: #ccc;
+    line-height: 1.6;
+}

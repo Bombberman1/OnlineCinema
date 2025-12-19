@@ -1,0 +1,29 @@
+.admin-container {
+    max-width: 800px;
+    margin: 40px auto;
+}
+
+.admin-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.admin-form input,
+.admin-form textarea,
+.admin-form select {
+    padding: 8px;
+    font-size: 14px;
+}
+
+.admin-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 24px;
+}
+
+.admin-list-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+}
