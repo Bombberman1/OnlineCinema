@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getMovies } from "../api/movies";
 import { getFavorites, addToFavorites } from "../api/favorites";
+import { getGenres } from "../api/genres";
 import { useToast } from "../components/ToastProvider";
 import "../styles/movies.css";
 import defaultPoster from "../assets/film-default.jpg";
 
 const MoviesPage = () => {
     const [movies, setMovies] = useState([]);
+    const [genres, setGenres] = useState([]);
     const [favoritesIds, setFavoritesIds] = useState(new Set());
 
     const [search, setSearch] = useState("");
@@ -24,9 +26,10 @@ const MoviesPage = () => {
             setMovies(moviesData);
 
             const favorites = await getFavorites();
-            setFavoritesIds(
-                new Set(favorites.map((f) => f.movieId))
-            );
+            setFavoritesIds(new Set(favorites.map(f => f.movieId)));
+
+            const genresData = await getGenres();
+            setGenres(genresData);
         };
 
         loadData();
@@ -35,13 +38,7 @@ const MoviesPage = () => {
     const handleAddFavorite = async (movieId) => {
         try {
             await addToFavorites(movieId);
-
-            setFavoritesIds((prev) => {
-                const next = new Set(prev);
-                next.add(movieId);
-                return next;
-            });
-
+            setFavoritesIds(prev => new Set([...prev, movieId]));
             showToast("Added to favorites", "success");
         } catch (err) {
             showToast(
@@ -51,12 +48,12 @@ const MoviesPage = () => {
         }
     };
 
-    const filteredMovies = movies.filter((movie) => {
+    const filteredMovies = movies.filter(movie => {
         return (
             movie.title.toLowerCase().includes(search.toLowerCase()) &&
             (!genre || movie.genres.includes(genre)) &&
-            (!year || movie.releaseYear === Number(year)) &&
-            (!country || movie.country === country)
+            (!year || String(movie.releaseYear).startsWith(year)) &&
+            (!country || movie.country.includes(country))
         );
     });
 
@@ -88,14 +85,16 @@ const MoviesPage = () => {
                     onChange={(e) => setGenre(e.target.value)}
                 >
                     <option value="">All genres</option>
-                    <option value="Horror">Horror</option>
-                    <option value="Battle">Battle</option>
-                    <option value="Cartoon">Cartoon</option>
+                    {genres.map(g => (
+                        <option key={g.id} value={g.name}>
+                            {g.name}
+                        </option>
+                    ))}
                 </select>
             </div>
 
             <div className="movies-grid">
-                {filteredMovies.map((movie) => {
+                {filteredMovies.map(movie => {
                     const isFavorite = favoritesIds.has(movie.id);
 
                     return (
@@ -103,9 +102,7 @@ const MoviesPage = () => {
                             <img
                                 src={movie.posterUrl || defaultPoster}
                                 alt={movie.title}
-                                onClick={() =>
-                                    navigate(`/watch/${movie.id}`)
-                                }
+                                onClick={() => navigate(`/watch/${movie.id}`)}
                                 onError={(e) => {
                                     e.target.onerror = null;
                                     e.target.src = defaultPoster;
@@ -120,9 +117,7 @@ const MoviesPage = () => {
                             {!isFavorite && (
                                 <button
                                     className="favorite-button"
-                                    onClick={() =>
-                                        handleAddFavorite(movie.id)
-                                    }
+                                    onClick={() => handleAddFavorite(movie.id)}
                                 >
                                     Add to favorites
                                 </button>

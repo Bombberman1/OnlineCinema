@@ -85,3 +85,9 @@
     color: #fff;
     border-radius: 6px;
 }
+
+.movie-rating {
+    font-size: 14px;
+    color: #f5c518;
+    margin-top: 4px;
+}
