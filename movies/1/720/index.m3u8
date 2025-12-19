@@ -4,7 +4,7 @@
 #EXT-X-MEDIA-SEQUENCE:0
 #EXT-X-PLAYLIST-TYPE:VOD
 #EXTINF:4.971633,
-/api/movie_playlists/1/720/seg_00000.ts
+seg_00000.ts
 #EXTINF:5.071733,
-/api/movie_playlists/1/720/seg_00001.ts
+seg_00001.ts
 #EXT-X-ENDLIST
