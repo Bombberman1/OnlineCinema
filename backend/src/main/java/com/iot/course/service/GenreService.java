@@ -1,5 +1,7 @@
 package com.iot.course.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,10 @@ public class GenreService {
                             .orElseGet(() -> genreRepository.save(
                                 Genre.builder().name(name).build()
                             ));
+    }
+
+    public List<Genre> getAll() {
+        return genreRepository.findAll();
     }
 }
 

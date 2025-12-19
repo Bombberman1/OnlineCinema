@@ -1,10 +1,11 @@
 package com.iot.course.service;
 
+import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,37 +23,77 @@ public class RecommendationService {
     @Autowired
     private MovieRepository movieRepository;
 
+    private static final int RECOMMEND_LIMIT = 4;
+
     public List<Movie> recommend(Long userId) {
-        List<WatchHistory> history = watchHistoryRepository.findByUserIdOrderByWatchedAtDesc(userId);
+        List<WatchHistory> history = watchHistoryRepository.findTop20ByUserIdOrderByWatchedAtDesc(userId);
+
+        Set<Long> watchedMovieIds = history.stream()
+                                        .map(h -> h.getMovie().getId())
+                                        .collect(Collectors.toSet());
 
         if (history.isEmpty()) {
-            return movieRepository.findAll();
+            return movieRepository.findAll()
+                                .stream()
+                                .sorted(Comparator.comparing(Movie::getRating).reversed())
+                                .limit(RECOMMEND_LIMIT)
+                                .toList();
         }
 
         Map<Long, Integer> genreCounter = new HashMap<>();
-        Set<Long> watchedMovies = new HashSet<>();
 
         for (WatchHistory h : history) {
-            watchedMovies.add(h.getMovie().getId());
             for (Genre g : h.getMovie().getGenres()) {
                 genreCounter.merge(g.getId(), 1, Integer::sum);
             }
         }
 
-        List<Long> topGenres = genreCounter.entrySet()
-                                        .stream()
-                                        .sorted(Map.Entry.<Long, Integer>comparingByValue().reversed())
-                                        .limit(3)
-                                        .map(Map.Entry::getKey)
-                                        .toList();
+        if (genreCounter.isEmpty()) {
+            return movieRepository.findAll()
+                                .stream()
+                                .filter(m -> !watchedMovieIds.contains(m.getId()))
+                                .sorted(Comparator.comparing(Movie::getRating).reversed())
+                                .limit(RECOMMEND_LIMIT)
+                                .toList();
+        }
 
-        return movieRepository.findAll()
+        List<Long> topGenreIds = genreCounter.entrySet()
+                                            .stream()
+                                            .sorted(Map.Entry.<Long, Integer>comparingByValue().reversed())
+                                            .map(Map.Entry::getKey)
+                                            .toList();
+
+        List<Movie> recommended = movieRepository.findAll()
+                                                .stream()
+                                                .filter(m -> !watchedMovieIds.contains(m.getId()))
+                                                .filter(m -> m.getGenres()
+                                                            .stream()
+                                                            .anyMatch(g -> topGenreIds.contains(g.getId()))
+                                                )
+                                                .sorted(Comparator.comparing(Movie::getRating).reversed())
+                                                .limit(RECOMMEND_LIMIT)
+                                                .toList();
+
+        if (recommended.isEmpty()) {
+            return movieRepository.findAll()
+                                .stream()
+                                .filter(m -> !watchedMovieIds.contains(m.getId()))
+                                .sorted(Comparator.comparing(Movie::getRating).reversed())
+                                .limit(RECOMMEND_LIMIT)
+                                .toList();
+        }
+
+        if (recommended.size() < RECOMMEND_LIMIT) {
+            recommended.addAll(
+                movieRepository.findAll()
                             .stream()
-                            .filter(m -> !watchedMovies.contains(m.getId()))
-                            .filter(m -> m.getGenres()
-                                        .stream()
-                                        .anyMatch(g -> topGenres.contains(g.getId()))
-                            )
-                            .toList();
+                            .filter(m -> !watchedMovieIds.contains(m.getId()))
+                            .sorted(Comparator.comparing(Movie::getRating).reversed())
+                            .limit(RECOMMEND_LIMIT - recommended.size())
+                            .toList()
+            );
+        }
+
+        return recommended;
     }
 }
