@@ -39,10 +39,10 @@ public class VideoFileService {
     @Autowired
     private WatchHistoryService watchHistoryService;
 
-    @Value("${videos-static-path}")
-    private String staticPath;
     @Value("${videos-path}")
-    private String locationPath;
+    private String videoLocationPath;
+    @Value("${ads-path}")
+    private String adsLocationPath;
 
     public void create(VideoFileRequestDTO dto) {
         Movie movie = movieRepository.findById(dto.movieId())
@@ -76,7 +76,7 @@ public class VideoFileService {
 
         try {
             Path hlsDir = Paths.get(
-                locationPath,
+                videoLocationPath,
                 movie.getId().toString(),
                 dto.quality().toString()
             );
@@ -153,7 +153,7 @@ public class VideoFileService {
             List<String> finalPlaylist = new java.util.ArrayList<>();
 
             Path basePlaylist = hasSub ? Paths.get(video.getFilePath())
-                                    : Paths.get(locationPath + "/ads/coca_cola/index.m3u8");
+                                    : Paths.get(adsLocationPath, "coca_cola/index.m3u8");
 
             List<String> baseLines = Files.readAllLines(basePlaylist);
 
@@ -167,14 +167,20 @@ public class VideoFileService {
             if (!hasSub) {
                 appendSegments(
                     finalPlaylist,
-                    Paths.get(locationPath + "/ads/coca_cola/index.m3u8")
+                    Paths.get(adsLocationPath, "coca_cola/index.m3u8"),
+                    Paths.get(adsLocationPath, "coca_cola/")
                 );
                 finalPlaylist.add("#EXT-X-DISCONTINUITY");
             }
 
             appendSegments(
                 finalPlaylist,
-                Paths.get(video.getFilePath())
+                Paths.get(video.getFilePath()),
+                Paths.get(
+                    videoLocationPath,
+                    movieId.toString(),
+                    quality.toString()
+                )
             );
 
             finalPlaylist.add("#EXT-X-ENDLIST");
@@ -185,14 +191,19 @@ public class VideoFileService {
         }
     }
 
-    private void appendSegments(List<String> out, Path playlist) throws IOException {
+    private void appendSegments(List<String> out, Path playlist, Path urlPrefix) throws IOException {
         for (String line : Files.readAllLines(playlist)) {
             line = line.trim();
 
             if (line.isEmpty()) continue;
 
-            if (line.startsWith("#EXTINF") || line.endsWith(".ts")) {
+            if (line.startsWith("#EXTINF")) {
                 out.add(line);
+                continue;
+            }
+
+            if (line.endsWith(".ts")) {
+                out.add(urlPrefix + "/" + line);
             }
         }
     }
