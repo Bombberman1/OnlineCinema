@@ -4,6 +4,7 @@ import { getMovies } from "../api/movies";
 import { getFavorites, addToFavorites } from "../api/favorites";
 import { useToast } from "../components/ToastProvider";
 import "../styles/movies.css";
+import defaultPoster from "../assets/film-default.jpg";
 
 const MoviesPage = () => {
     const [movies, setMovies] = useState([]);
@@ -100,11 +101,15 @@ const MoviesPage = () => {
                     return (
                         <div key={movie.id} className="movie-card">
                             <img
-                                src={movie.posterUrl}
+                                src={movie.posterUrl || defaultPoster}
                                 alt={movie.title}
                                 onClick={() =>
                                     navigate(`/watch/${movie.id}`)
                                 }
+                                onError={(e) => {
+                                    e.target.onerror = null;
+                                    e.target.src = defaultPoster;
+                                }}
                             />
 
                             <div className="movie-info">

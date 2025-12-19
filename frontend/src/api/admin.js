@@ -38,13 +38,13 @@ export const getVideoQualities = async (movieId) => {
     return response.data;
 };
 
-export const watchVideo = async (movieId, quality) => {
-    const response = await api.get(
-        `/video_files/${movieId}/watch`,
-        {
-            params: { quality: quality },
-        }
-    );
+// export const watchVideo = async (movieId, quality) => {
+//     const response = await api.get(
+//         `/video_files/${movieId}/watch`,
+//         {
+//             params: { quality: quality },
+//         }
+//     );
 
-    return response.data;
-};
+//     return response.data;
+// };

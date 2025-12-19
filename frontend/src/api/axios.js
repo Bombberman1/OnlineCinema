@@ -17,10 +17,14 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
     (response) => response,
     (error) => {
+        const status = error.response?.status;
+        const message = error.response?.data?.message;
+
         if (
-            error.response &&
-            error.response.status === 403 &&
-            error.response.data?.message === "Invalid token"
+            status === 401 ||
+            (status === 403 &&
+                (message === "Invalid token" ||
+                 message === "JWT Token Expired"))
         ) {
             store.dispatch(logout());
             window.location.href = "/login";

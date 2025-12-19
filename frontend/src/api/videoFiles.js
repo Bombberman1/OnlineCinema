@@ -5,13 +5,9 @@ export const getVideoQualities = async (movieId) => {
     return response.data;
 };
 
-export const watchVideo = async (movieId, quality) => {
-    const response = await api.get(
-        `/video_files/${movieId}/watch`,
-        {
-            params: { quality: quality },
-            responseType: "blob",
-        }
-    );
-    return response.data;
-};
+// export const watchVideo = async (movieId, quality) => {
+//     const res = await api.get(
+//         `/video_files/${movieId}/watch?quality=${quality}`
+//     );
+//     return res.data;
+// };

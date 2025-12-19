@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getFavorites } from "../api/favorites";
 import "../styles/movies.css";
+import defaultPoster from "../assets/film-default.jpg";
 
 const FavoritesPage = () => {
     const [favorites, setFavorites] = useState([]);
@@ -25,8 +26,12 @@ const FavoritesPage = () => {
                         }
                     >
                         <img
-                            src={movie.posterUrl}
+                            src={movie.posterUrl || defaultPoster}
                             alt={movie.title}
+                            onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src = defaultPoster;
+                            }}
                         />
 
                         <div className="movie-info">

@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getRecommends } from "../api/movies";
+import HlsVideo from "../components/HlsVideo";
 import "../styles/movies.css";
+import "../styles/video.css";
+import defaultPoster from "../assets/film-default.jpg";
 
 const HomePage = () => {
     const [recommended, setRecommended] = useState([]);
@@ -35,9 +38,14 @@ const HomePage = () => {
                         className="movie-card"
                         onClick={() => navigate(`/watch/${movie.id}`)}
                     >
-                        <img
-                            src={movie.posterUrl}
-                            alt={movie.title}
+                        <HlsVideo
+                            src={`/api/video_files/${movie.id}/watch?quality=360`}
+                            poster={movie.posterUrl || defaultPoster}
+                            muted
+                            autoPlay
+                            loop
+                            controls={false}
+                            className="preview-video"
                         />
 
                         <div className="movie-info">
