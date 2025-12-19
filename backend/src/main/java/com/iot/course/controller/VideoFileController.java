@@ -3,8 +3,6 @@ package com.iot.course.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -53,14 +51,12 @@ public class VideoFileController {
         return videoFileService.getAvailableQualities(movieId);
     }
 
-    @GetMapping("/{movieId}/watch")
-    public ResponseEntity<Resource> watch(@PathVariable Long movieId, @RequestParam Integer quality) {
-        Resource videoResource = videoFileService.loadVideoResource(movieId, quality);
-
-        return ResponseEntity.ok()
-                            .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                            .header(HttpHeaders.CONTENT_DISPOSITION, "inline")
-                            .body(videoResource);
+    @GetMapping(
+        value = "/{movieId}/watch",
+        produces = "application/vnd.apple.mpegurl"
+    )
+    public String watch(@PathVariable Long movieId, @RequestParam Integer quality) {
+        return videoFileService.loadHlsPlaylist(movieId, quality);
     }
 
     @PreAuthorize("hasRole('ADMIN')")

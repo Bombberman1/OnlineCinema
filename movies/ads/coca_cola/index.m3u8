@@ -1,0 +1,12 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-TARGETDURATION:5
+#EXT-X-MEDIA-SEQUENCE:0
+#EXT-X-PLAYLIST-TYPE:VOD
+#EXTINF:5.041667,
+/api/movie_playlists/ads/coca_cola/seg_00000.ts
+#EXTINF:3.500000,
+/api/movie_playlists/ads/coca_cola/seg_00001.ts
+#EXTINF:2.625000,
+/api/movie_playlists/ads/coca_cola/seg_00002.ts
+#EXT-X-ENDLIST

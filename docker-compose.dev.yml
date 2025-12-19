@@ -21,7 +21,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./movies:/movies
+      - ./movies:/api/movie_playlists
 
   frontend:
     container_name: frontend
